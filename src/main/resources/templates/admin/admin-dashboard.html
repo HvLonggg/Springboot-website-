@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trang chủ Snack Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #0d6efd;
+            color: white;
+            padding-top: 1rem;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar a, .sidebar .dropdown-toggle {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+        }
+        .sidebar a:hover, .sidebar .dropdown-toggle:hover {
+            background-color: #0b5ed7;
+        }
+        .sidebar .dropdown-menu {
+            background-color: #0b5ed7;
+            border: none;
+            padding: 0;
+            width: 100%;
+        }
+        .sidebar .dropdown-menu .dropdown-item {
+            color: white;
+            padding-left: 40px;
+        }
+        .sidebar .dropdown-menu .dropdown-item:hover {
+            background-color: #084298;
+        }
+        .sidebar .dropdown-divider {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .content {
+            margin-left: 250px;
+            flex-grow: 1;
+            padding: 2rem;
+        }
+        .card-custom {
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        .card-custom:hover {
+            transform: scale(1.02);
+        }
+        .highlight {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="text-center mb-4">
+        <h4>Snack Store</h4>
+    </div>
+    <a>Trang chủ</a>
+
+    <!-- Xem đồ ăn vặt -->
+    <div class="dropdown">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownSnacks" data-bs-toggle="dropdown" aria-expanded="false">
+            Xem đồ ăn vặt
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownSnacks">
+            <li><a class="dropdown-item" th:href="@{/admin/snacks}">Danh sách</a></li>
+            <li><a class="dropdown-item" th:href="@{/admin/snacks/add}">Thêm mới</a></li>
+        </ul>
+    </div>
+
+    <!-- Quản lý đơn đặt hàng -->
+    <div class="dropdown mt-3">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownOrders" data-bs-toggle="dropdown" aria-expanded="false">
+            Quản lý đơn đặt hàng
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownOrders">
+            <li><a class="dropdown-item" th:href="@{/admin/orders}">Danh sách đơn hàng</a></li>
+        </ul>
+    </div>
+
+    <!-- Quản lý tài khoản -->
+    <div class="dropdown mt-3">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownAccount" data-bs-toggle="dropdown" aria-expanded="false">
+            Quản lý tài khoản
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownAccount">
+            <li><a class="dropdown-item" th:href="@{/admin/user_list}">Danh sách tài khoản</a></li>
+            <li><a class="dropdown-item" th:href="@{/login}">Đăng nhập</a></li>
+            <li><a class="dropdown-item" th:href="@{/register}">Đăng ký</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-danger">Đăng xuất</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<div class="content">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-primary">🍟 Chào mừng đến với Snack Store!</h1>
+            <p class="lead">Khám phá thế giới ăn vặt đầy màu sắc và hương vị!</p>
+        </div>
+
+        <div class="card card-custom p-4 bg-white">
+            <h3 class="mb-3 text-center text-dark">🎉 Giới thiệu về <span class="highlight">Snack Store</span></h3>
+            <p>
+                <strong>Snack Store</strong> là nền tảng mua sắm trực tuyến chuyên biệt dành cho những tín đồ đam mê <span class="highlight">đồ ăn vặt</span>.
+                Chúng tôi mang đến hàng trăm sản phẩm hấp dẫn từ <strong>kẹo, bánh, snack,chè và bánh tráng...</strong> đến những món độc lạ từ nhiều vùng miền trên đất nước.
+            </p>
+            <p>
+                🚀 Với giao diện thân thiện và hiện đại, người dùng có thể:
+            <ul>
+                <li>🛒 Dễ dàng tìm kiếm và đặt mua món ăn yêu thích</li>
+                <li>🔐 Đăng ký và quản lý tài khoản cá nhân</li>
+                <li>📦 Theo dõi tình trạng đơn hàng mọi lúc</li>
+            </ul>
+            </p>
+            <p>
+                🔧 Với hệ thống quản trị tiện lợi, quản trị viên có thể:
+            <ul>
+                <li>➕ Thêm hoặc cập nhật sản phẩm nhanh chóng</li>
+                <li>📋 Quản lý danh sách đơn hàng & người dùng</li>
+                <li>⚙️ Phân quyền rõ ràng giữa admin và user</li>
+            </ul>
+            </p>
+            <p class="text-center mt-4">
+                ❤️ <em>Snack Store – nơi hội tụ niềm vui, hương vị và sự tiện lợi trong từng cú click!</em>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

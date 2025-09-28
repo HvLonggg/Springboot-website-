@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chi tiết món ăn - Letflix Snack</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #f7f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        body {
+            padding-top: 70px;
+        }
+        .navbar-custom {
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 1rem 3rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .hidden {
+            transform: translateY(-100%);
+        }
+
+        .navbar-collapse {
+            display: flex !important;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        form.logout-form {
+            display: flex;
+            align-items: center;
+            margin-left: 0;
+            padding: 0;
+        }
+
+        form.logout-form button {
+            border: none;
+            background-color: #0d6efd; /* màu xanh bootstrap */
+            color: white;
+            padding: 6px 15px;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.3s ease;
+        }
+        form.logout-form button:hover {
+            background-color: #084298;
+        }
+        form.logout-form button svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .search-input {
+            min-width: 300px;
+            max-width: 400px;
+            border-radius: 30px;
+            border: 1px solid #ced4da;
+            background-color: #ffffff;
+            padding: 0.375rem 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            position: relative;
+            right: 45px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            background-color: #fefefe;
+        }
+
+        .container {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #6a11cb, #2575fc); /* tím xanh gradient */
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            color: #fff;
+        }
+
+
+        .product-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 30px;
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .product-image {
+            flex: 1 1 400px;
+            max-width: 400px;
+            max-height: 400px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-info {
+            flex: 1 1 400px;
+            min-width: 300px;
+        }
+
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .product-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .price-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #e63946; /* đỏ nổi bật */
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 250px;
+        }
+
+        label.form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            font-size: 1.1rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1.8px solid #ced4da;
+            transition: border-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus {
+            border-color: #e63946;
+            outline: none;
+            box-shadow: 0 0 8px #e63946aa;
+        }
+
+        /* Nút Thêm vào giỏ hàng */
+        button.btn-add-to-cart {
+            background-color: #2ecc71;;
+            border: none;
+            font-size: 1.1rem;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(230, 57, 70, 0.4);
+            position: relative;
+            left:500px;
+            bottom: 48px;
+        }
+
+        button.btn-add-to-cart:hover {
+            background-color: #3498db;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 12px 24px rgba(193, 39, 51, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .product-image, .product-info {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+
+
+        }
+
+        footer {
+            background-color: #C0C0C0; /* màu xám nhạt */
+            color: #212529;
+
+            position: relative;
+            top: 45px;
+        }
+
+        footer .container {
+            max-width: 1140px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        footer .row {
+            align-items: center;
+        }
+
+        footer .col-md-4 {
+            margin-bottom: 1rem;
+        }
+
+        footer h5 {
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        footer p,
+        footer a {
+            margin-bottom: 0.4rem;
+            color: #212529;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: #0d6efd; /* màu xanh bootstrap khi hover */
+        }
+
+        footer hr {
+            margin: 0.8rem 0;
+            border-color: #b3b3b3;
+        }
+
+        /* Căn phải cho cột cuối cùng trên màn hình md+ */
+        @media (min-width: 768px) {
+            footer .col-md-4.text-md-end {
+                text-align: right;
+                position: relative;
+                left: 100px;
+            }
+
+            @media (min-width: 768px) {
+                footer .col-md-4 {
+                    text-align: right;
+                    position: relative;
+                    /*left: 20px;*/
+                    right: 150px;
+                }
+
+                @media (min-width: 768px) {
+                    footer .col-md-4 a {
+                        text-align: right;
+                        position: relative;
+                        left: 25px;
+                        font-size: 16px;
+
+                    }
+
+                    footer .d-flex.justify-content-md-end {
+                        justify-content: flex-end !important;
+                        position: relative;
+                        right: 42px;
+                    }
+                }
+
+                /* Style các icon mạng xã hội */
+                footer .footer-social-icons {
+                    gap: 1.5rem;
+                }
+
+                footer .footer-social-icons a {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 35px;
+                    height: 45px;
+                    border-radius: 50%;
+                    /*background-color: #e0e0e0;*/
+                    transition: background-color 0.3s ease;
+                }
+
+
+                footer .footer-social-icons img {
+                    width: 40px;
+                    height: 40px;
+                    object-fit: contain;
+                    filter: invert(0); /* giữ màu gốc icon */
+                    transition: filter 0.3s ease;
+                }
+
+                footer .footer-social-icons a:hover img {
+                    filter: invert(1);
+                }
+
+                /* Text copyright căn giữa và nhỏ gọn */
+                footer .text-center {
+                    font-size: 0.9rem;
+                    color: #555;
+                    /*margin-top: 0.5rem;*/
+                    margin-bottom: 0;
+                    position: relative;
+                    bottom: 15px;
+                }
+
+                footer .col-md-4:first-child {
+                    text-align: left;
+                    position: relative;
+                    right: 120px;
+                    top: 20px;
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-primary" th:href="@{/user-dashboard}">🍿 Long</a>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                let lastScrollY = window.scrollY;
+                const header = document.querySelector("nav.navbar-custom");
+
+                if (!header) return;
+
+                window.addEventListener("scroll", () => {
+                    if (window.scrollY > lastScrollY) {
+                        // Cuộn xuống -> ẩn header
+                        header.classList.add("hidden");
+                    } else {
+                        // Cuộn lên -> hiện header
+                        header.classList.remove("hidden");
+                    }
+                    lastScrollY = window.scrollY;
+                });
+            });
+
+        </script>
+
+
+
+        <div class="collapse navbar-collapse">
+            <!-- Tìm kiếm -->
+            <form th:action="@{/user-dashboard}" method="get" class="position-relative" style="width: 300px; margin-left: -10px;">
+                <input
+                        type="text"
+                        name="keyword"
+                        class="form-control search-input pe-5"
+                        placeholder="Tìm món ăn..."
+                        th:value="${keyword}" />
+
+                <button type="submit"
+                        class="btn position-absolute top-50 end-0 translate-middle-y pe-3 text-muted border-0 bg-transparent">
+                    🔍
+                </button>
+            </form>
+
+
+            <!-- Giỏ hàng và đăng xuất -->
+            <ul class="navbar-nav align-items-center d-flex flex-row gap-3 mb-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/cart">🛒 Giỏ hàng (<span th:text="${cartItemCount}">0</span>)</a>
+                </li>
+                <li class="nav-item">
+                    <form th:action="@{/logout}" method="post" class="logout-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" aria-label="Đăng xuất">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 13v-2H7V8l-5 4 5 4v-3h9z"/>
+                                <path d="M20 19H10v-2h10v-6H10V5h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2z"/>
+                            </svg>
+                            Đăng xuất
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <a href="/user-dashboard" class="btn btn-back mb-4">&larr; Quay lại trang chủ</a>
+
+    <div class="product-card shadow-sm">
+        <img th:src="@{/uploads/{image}(image=${snack.imageName})}" alt="Ảnh món ăn" class="product-image" />
+
+        <div class="product-info">
+            <h1 class="product-title" th:text="${snack.name}">Tên món ăn</h1>
+            <p class="product-description" th:text="${snack.description}">
+                Mô tả chi tiết về món ăn, hương vị, nguyên liệu và các đặc điểm nổi bật.
+            </p>
+            <p class="price-text" th:text="${snack.formattedPrice + ' đ'}">100,000 đ</p>
+
+
+            <!-- ✅ Bổ sung tồn kho và trạng thái -->
+            <p class="stock-text">
+                Hàng sẵn tại kho: <span th:text="${snack.stockQuantity}">0</span> sản phẩm
+            </p>
+
+            <p class="status-text">
+                Trạng thái:
+                <span th:text="${snack.inStock} ? 'Còn hàng' : 'Hết hàng'"
+                      th:classappend="${snack.inStock} ? 'text-success fw-bold' : 'text-danger fw-bold'">
+            Còn hàng
+        </span>
+            </p>
+
+            <form th:action="@{'/cart/add/' + ${snack.id}}" method="post" class="mt-4" th:if="${snack.inStock}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <label for="quantity" class="form-label">Số lượng:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" th:max="${snack.stockQuantity}" />
+
+                <button type="submit" class="btn-add-to-cart">➕ Thêm vào giỏ</button>
+
+            </form>
+            <p class="text-danger fw-bold mt-4" th:unless="${snack.inStock}">
+                Món ăn này hiện đã hết hàng. Vui lòng quay lại sau!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Liên hệ</h5>
+                <p>Địa chỉ: 57 P. Nguyễn Hoàng, Mỹ Đình, Nam Từ Liêm, Hà Nội, Việt Nam</p>
+                <p>Email: hvlongg@gmail.com</p>
+                <p>Điện thoại: 0364892903</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Thông tin</h5>
+                <p><a href="#" class="text-decoration-none">Chính sách bảo mật</a></p>
+                <p><a href="#" class="text-decoration-none">Điều khoản sử dụng</a></p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <h5>Kết nối với chúng tôi</h5>
+                <div class="d-flex footer-social-icons justify-content-center justify-content-md-end align-items-center">
+                    <a href="https://www.facebook.com/share/1BuiuE26kS/?mibextid=wwXIfr" target="_blank" aria-label="Facebook">
+                        <img src="/uploads/iconfb.png" alt="Facebook" />
+                    </a>
+                    <a href="https://chat.zalo.me/" target="_blank" aria-label="Zalo">
+                        <img src="/uploads/zalo.png" alt="Zalo" />
+                    </a>
+                    <a href="https://www.instagram.com/iamm_longgg/" target="_blank" aria-label="Instagram">
+                        <img src="/uploads/img.png" alt="Instagram" />
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <p class="text-center">&copy; 2025 Long Snack. All rights reserved.</p>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm đồ ăn mới</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-success">🍜 Thêm món ăn mới</h2>
+        <a href="/admin/snacks" class="btn btn-secondary">⬅ Quay lại</a>
+    </div>
+
+    <form th:action="@{/admin/snacks/save}"
+          th:object="${snack}"
+          method="post"
+          enctype="multipart/form-data"
+          class="row g-3 needs-validation"
+          novalidate>
+
+        <div class="col-md-6">
+            <label for="name" class="form-label">Tên món</label>
+            <input type="text" id="name" class="form-control" th:field="*{name}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="category" class="form-label">Danh mục</label>
+            <input type="text" id="category" class="form-control" th:field="*{category}" required>
+        </div>
+
+        <div class="col-md-12">
+            <label for="description" class="form-label">Mô tả</label>
+            <input type="text" id="description" class="form-control" th:field="*{description}" required>
+        </div>
+
+        <div class="col-md-4">
+            <label for="price" class="form-label">Giá (₫)</label>
+            <!-- Đổi input number thành text để hỗ trợ định dạng giá -->
+            <input type="text" id="price" class="form-control" th:field="*{price}" required oninput="formatPriceInput(this)">
+        </div>
+
+        <div class="col-md-4">
+            <label for="stockQuantity" class="form-label">Số lượng tồn</label>
+            <input type="number" id="stockQuantity" class="form-control" th:field="*{stockQuantity}" min="0" required>
+        </div>
+
+        <div class="col-md-4">
+            <label for="inStock" class="form-label d-block">Còn hàng</label>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="inStock" th:field="*{inStock}">
+                <label class="form-check-label" for="inStock">Còn hàng</label>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <label for="imageFile" class="form-label">Chọn ảnh món ăn</label>
+            <input type="file" id="imageFile" name="imageFile" class="form-control" accept="image/*" required>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">💾 Lưu món ăn</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Hàm định dạng giá nhập vào: thêm dấu chấm phân cách hàng nghìn
+    function formatPriceInput(input) {
+        let value = input.value;
+
+        // Loại bỏ tất cả ký tự không phải số
+        value = value.replace(/\D/g, '');
+
+        // Đảo ngược chuỗi để dễ thêm dấu chấm từng 3 chữ số
+        let reversed = value.split('').reverse().join('');
+
+        // Thêm dấu chấm từng 3 chữ số
+        let withDots = reversed.match(/.{1,3}/g).join('.');
+
+        // Đảo ngược lại chuỗi đã thêm dấu chấm
+        let formatted = withDots.split('').reverse().join('');
+
+        input.value = formatted;
+    }
+
+    // Khi submit form, bỏ dấu chấm ra để gửi dữ liệu chuẩn về backend
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const priceInput = document.getElementById('price');
+        priceInput.value = priceInput.value.replace(/\./g, '');
+    });
+
+    // Bootstrap form validation
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+
+</body>
+</html>
